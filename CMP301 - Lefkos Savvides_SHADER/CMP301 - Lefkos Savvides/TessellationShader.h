@@ -11,6 +11,15 @@ using namespace DirectX;
 class TessellationShader : public BaseShader
 {
 private:
+
+	struct MatrixBufferType
+	{
+		XMMATRIX world;
+		XMMATRIX view;
+		XMMATRIX projection;
+		XMMATRIX lightView;
+		XMMATRIX lightProjection;
+	};
 	struct TessellationBufferType
 	{
 		float tessellationFactor;

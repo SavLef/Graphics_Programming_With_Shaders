@@ -1,11 +1,14 @@
 // Tessellation Hull Shader
 // Prepares control points for tessellation
+
+
 struct InputType
 {
 	float3 position : POSITION;
 	float4 colour : COLOR;
-	float3 normal : NORMAL;
 	float2 tex : TEXCOORD0;
+	float3 normal : NORMAL;
+	float4 lightViewPos : TEXCOORD1;
 };
 
 struct ConstantOutputType
@@ -18,8 +21,9 @@ struct OutputType
 {
 	float3 position : POSITION;
 	float4 colour : COLOR;
-	float3 normal : NORMAL;
 	float2 tex : TEXCOORD0;
+	float3 normal : NORMAL;
+	float4 lightViewPos : TEXCOORD1;
 };
 
 ConstantOutputType PatchConstantFunction(InputPatch<InputType, 4> inputPatch, uint patchId : SV_PrimitiveID)
@@ -54,6 +58,8 @@ OutputType main(InputPatch<InputType, 4> patch, uint pointId : SV_OutputControlP
 	// Set the input colour as the output colour.
 	output.colour = patch[pointId].colour;
 	output.tex = patch[pointId].tex;
+	output.normal = patch[pointId].normal;
+	output.lightViewPos = patch[pointId].lightViewPos;
 
 	return output;
 }

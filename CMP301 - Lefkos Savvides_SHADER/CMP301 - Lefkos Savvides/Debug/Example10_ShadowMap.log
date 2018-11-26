@@ -1,2 +1,6 @@
-﻿  TessellationShader.cpp
-  Example10_ShadowMap.vcxproj -> C:\Users\Lefkos Savvides\Desktop\Graphics Programming\CMP301-Metal_Gear_4\CMP301 - Lefkos Savvides_SHADER\Debug\CMP301 - Lefkos Savvides.exe
+﻿C:\Users\Mist\Desktop\CMP301\CMP301-GRAPHICS_PROGRAMMING\CMP301 - Lefkos Savvides_SHADER\CMP301 - Lefkos Savvides\tessellation_ds.hlsl(69,2-36): warning X3206: implicit truncation of vector type
+C:\Users\Mist\Desktop\CMP301\CMP301-GRAPHICS_PROGRAMMING\CMP301 - Lefkos Savvides_SHADER\CMP301 - Lefkos Savvides\tessellation_ds.hlsl(80,18-41): warning X3206: 'mul': implicit truncation of vector type
+C:\Users\Mist\Desktop\CMP301\CMP301-GRAPHICS_PROGRAMMING\CMP301 - Lefkos Savvides_SHADER\CMP301 - Lefkos Savvides\tessellation_ds.hlsl(80,2-41): warning X3206: implicit truncation of vector type
+  
+  compilation object save succeeded; see C:\Users\Mist\Desktop\CMP301\CMP301-GRAPHICS_PROGRAMMING\CMP301 - Lefkos Savvides_SHADER\CMP301 - Lefkos Savvides\tessellation_ds.cso
+  Example10_ShadowMap.vcxproj -> C:\Users\Mist\Desktop\CMP301\CMP301-GRAPHICS_PROGRAMMING\CMP301 - Lefkos Savvides_SHADER\Debug\CMP301 - Lefkos Savvides.exe

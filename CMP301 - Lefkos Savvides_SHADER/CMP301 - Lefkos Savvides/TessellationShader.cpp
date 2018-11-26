@@ -4,7 +4,7 @@
 
 TessellationShader::TessellationShader(ID3D11Device* device, HWND hwnd) : BaseShader(device, hwnd)
 {
-	initShader(L"tessellation_vs.cso", L"tessellation_hs.cso", L"tessellation_ds.cso", L"shadow_ps.cso");
+	initShader(L"Tessellation_vs.cso", L"Tessellation_hs.cso", L"tessellation_ds.cso", L"Tessellation_ps.cso");
 }
 
 
@@ -99,12 +99,14 @@ void TessellationShader::setShaderParameters(ID3D11DeviceContext* deviceContext,
 {
 	HRESULT result;
 	D3D11_MAPPED_SUBRESOURCE mappedResource;
+
 	LightBufferType* lightPtr;
 
 	// Transpose the matrices to prepare them for the shader.
 	XMMATRIX tworld = XMMatrixTranspose(worldMatrix);
 	XMMATRIX tview = XMMatrixTranspose(viewMatrix);
 	XMMATRIX tproj = XMMatrixTranspose(projectionMatrix);
+	XMMATRIX tLightViewMatrix, tLightProjectionMatrix;
 
 	// Lock the constant buffer so it can be written to.
 	result = deviceContext->Map(matrixBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
@@ -112,6 +114,11 @@ void TessellationShader::setShaderParameters(ID3D11DeviceContext* deviceContext,
 	dataPtr->world = tworld;// worldMatrix;
 	dataPtr->view = tview;
 	dataPtr->projection = tproj;
+
+	//light 
+	dataPtr->lightView = tLightViewMatrix;
+	dataPtr->lightProjection = tLightProjectionMatrix;
+
 	deviceContext->Unmap(matrixBuffer, 0);
 	deviceContext->DSSetConstantBuffers(0, 1, &matrixBuffer);
 
