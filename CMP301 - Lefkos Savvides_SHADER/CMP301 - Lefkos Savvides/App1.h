@@ -65,6 +65,7 @@ private:
 	
 	float splightx, splighty, splightz;
 	float splightdx, splightdy, splightdz;
+	float dt;
 };
 
 #endif

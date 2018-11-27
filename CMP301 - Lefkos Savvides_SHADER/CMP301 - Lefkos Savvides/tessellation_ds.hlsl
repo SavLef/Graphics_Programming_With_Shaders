@@ -19,6 +19,12 @@ struct ConstantOutputType
 	float inside[2] : SV_InsideTessFactor;
 };
 
+cbuffer TimerBuffer : register(b1)
+{
+	float dtime;
+	float3 padding;
+}
+
 struct InputType
 {
 	float3 position : POSITION;
@@ -66,7 +72,8 @@ OutputType main(ConstantOutputType input, float2 uvwCoord : SV_DomainLocation, c
 	lightVP = lerp(lvp1, lvp2, uvwCoord.x);
 
 	float4 heightmap = texture0.SampleLevel(sampler0, tex, 0);
-	vertexPosition.z += -heightmap * 35;
+	vertexPosition.z += -heightmap * 20;
+	vertexPosition.z = sin(vertexPosition.z + dtime * 40/*speec*/)*10;
 
 
 	// Calculate the position of the new vertex against the world, view, and projection matrices.

@@ -4,7 +4,7 @@
 
 TessellationShader::TessellationShader(ID3D11Device* device, HWND hwnd) : BaseShader(device, hwnd)
 {
-	initShader(L"Tessellation_vs.cso", L"Tessellation_hs.cso", L"tessellation_ds.cso", L"Tessellation_ps.cso");
+	initShader(L"Tessellation_vs.cso", L"Tessellation_hs.cso", L"tessellation_ds.cso", L"tessellation_ps.cso");
 }
 
 
@@ -40,6 +40,7 @@ void TessellationShader::initShader(WCHAR* vsFilename, WCHAR* psFilename)
 	D3D11_BUFFER_DESC matrixBufferDesc;
 	D3D11_SAMPLER_DESC samplerDesc;
 	D3D11_BUFFER_DESC lightBufferDesc;
+	D3D11_BUFFER_DESC timerBufferDesc;
 
 	// Load (+ compile) shader files
 	loadVertexShader(vsFilename);
@@ -52,6 +53,7 @@ void TessellationShader::initShader(WCHAR* vsFilename, WCHAR* psFilename)
 	matrixBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 	matrixBufferDesc.MiscFlags = 0;
 	matrixBufferDesc.StructureByteStride = 0;
+
 
 	// Create the constant buffer pointer so we can access the vertex shader constant buffer from within this class.
 	renderer->CreateBuffer(&matrixBufferDesc, NULL, &matrixBuffer);
@@ -82,6 +84,16 @@ void TessellationShader::initShader(WCHAR* vsFilename, WCHAR* psFilename)
 	lightBufferDesc.MiscFlags = 0;
 	lightBufferDesc.StructureByteStride = 0;
 	renderer->CreateBuffer(&lightBufferDesc, NULL, &lightBuffer);
+
+
+	// Setup the description of the dynamic matrix constant buffer that is in the vertex shader.
+	timerBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
+	timerBufferDesc.ByteWidth = sizeof(TimeBufferType);
+	timerBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+	timerBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+	timerBufferDesc.MiscFlags = 0;
+	timerBufferDesc.StructureByteStride = 0;
+	renderer->CreateBuffer(&timerBufferDesc, NULL, &timeBuffer);
 }
 
 void TessellationShader::initShader(WCHAR* vsFilename, WCHAR* hsFilename, WCHAR* dsFilename, WCHAR* psFilename)
@@ -95,7 +107,7 @@ void TessellationShader::initShader(WCHAR* vsFilename, WCHAR* hsFilename, WCHAR*
 }
 
 
-void TessellationShader::setShaderParameters(ID3D11DeviceContext* deviceContext, const XMMATRIX &worldMatrix, const XMMATRIX &viewMatrix, const XMMATRIX &projectionMatrix, ID3D11ShaderResourceView* texture, ID3D11ShaderResourceView* texture2, ID3D11ShaderResourceView*depthMap, Light* light)
+void TessellationShader::setShaderParameters(ID3D11DeviceContext* deviceContext, const XMMATRIX &worldMatrix, const XMMATRIX &viewMatrix, const XMMATRIX &projectionMatrix, ID3D11ShaderResourceView* texture, ID3D11ShaderResourceView* texture2, ID3D11ShaderResourceView*depthMap, Light* light,  float dtimed)
 {
 	HRESULT result;
 	D3D11_MAPPED_SUBRESOURCE mappedResource;
@@ -106,7 +118,8 @@ void TessellationShader::setShaderParameters(ID3D11DeviceContext* deviceContext,
 	XMMATRIX tworld = XMMatrixTranspose(worldMatrix);
 	XMMATRIX tview = XMMatrixTranspose(viewMatrix);
 	XMMATRIX tproj = XMMatrixTranspose(projectionMatrix);
-	XMMATRIX tLightViewMatrix, tLightProjectionMatrix;
+	XMMATRIX tLightViewMatrix = XMMatrixTranspose(light->getViewMatrix());
+	XMMATRIX tLightProjectionMatrix = XMMatrixTranspose(light->getOrthoMatrix());
 
 	// Lock the constant buffer so it can be written to.
 	result = deviceContext->Map(matrixBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
@@ -121,6 +134,7 @@ void TessellationShader::setShaderParameters(ID3D11DeviceContext* deviceContext,
 
 	deviceContext->Unmap(matrixBuffer, 0);
 	deviceContext->DSSetConstantBuffers(0, 1, &matrixBuffer);
+
 
 	//Additional
 	// Send light data to pixel shader
@@ -138,6 +152,16 @@ void TessellationShader::setShaderParameters(ID3D11DeviceContext* deviceContext,
 	deviceContext->PSSetShaderResources(1, 1, &depthMap);
 	deviceContext->PSSetSamplers(0, 1, &sampleState);
 	deviceContext->PSSetSamplers(1, 1, &sampleStateShadow);
+
+
+	//Timer
+	TimeBufferType* timePtr;
+	deviceContext->Map(timeBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
+	timePtr = (TimeBufferType*)mappedResource.pData;
+	timePtr->dtime = dtimed;
+	deviceContext->Unmap(timeBuffer, 0);
+	deviceContext->DSSetConstantBuffers(1, 1, &timeBuffer);
+	deviceContext->PSSetConstantBuffers(1, 1, &timeBuffer);
 
 	// Set shader texture and sampler resource in the domain shader for Height Mapping.
 	deviceContext->DSSetShaderResources(0, 1, &texture);

@@ -2,6 +2,14 @@
 // Doesn't do much, could manipulate the control points
 // Pass forward data, strip out some values not required for example.
 
+cbuffer MatrixBuffer : register(b0)
+{
+	matrix worldMatrix;
+	matrix viewMatrix;
+	matrix projectionMatrix;
+	matrix lightViewMatrix;
+	matrix lightProjectionMatrix;
+};
 
 struct InputType
 {

@@ -104,6 +104,8 @@ bool App1::render()
 	light->setPosition(splightx,splighty,splightz);
 	light->setDirection(splightdx, splightdy, splightdz);
 
+	dt += timer->getTime();
+
 	// Perform depth pass
 
 	depthPass();
@@ -169,6 +171,8 @@ void App1::depthPass()
 
 
 	//---------------------
+	worldMatrix = renderer->getWorldMatrix();
+	worldMatrix = XMMatrixTranslation(-4.f, 10.f, 35.f);
 
 	quad->sendData(renderer->getDeviceContext());
 	depthShader->setShaderParameters(renderer->getDeviceContext(), worldMatrix, lightViewMatrix, lightProjectionMatrix);
@@ -231,11 +235,13 @@ void App1::hmpass()
 	shadowShader->render(renderer->getDeviceContext(), MetalGearRex->getIndexCount());
 
 	worldMatrix = renderer->getWorldMatrix();
-	worldMatrix = XMMatrixTranslation(-4.f, 10.f, 30.f);
+	worldMatrix = XMMatrixTranslation(-4.f, 10.f, 35.f);
 
 	quad->sendData(renderer->getDeviceContext());
-	tessellationShader->setShaderParameters(renderer->getDeviceContext(), worldMatrix, viewMatrix, projectionMatrix, textureMgr->getTexture("brick"), textureMgr->getTexture("height"), shadowMap->getShaderResourceView(), light);
+	tessellationShader->setShaderParameters(renderer->getDeviceContext(), worldMatrix, viewMatrix, projectionMatrix,/*texture*/ textureMgr->getTexture("fire"), /*heihhtmapping*/ textureMgr->getTexture("height"), shadowMap->getShaderResourceView(), light, dt);
 	tessellationShader->render(renderer->getDeviceContext(), quad->getIndexCount());
+
+
 
 
 
@@ -278,7 +284,7 @@ void App1::finalPass()
 
 
 	///UNCOMMENT FOR DEBUGGING WIREFRAME MODE
-	/*
+	
 	XMMATRIX viewMatrix = camera->getViewMatrix();
 	XMMATRIX projectionMatrix = renderer->getProjectionMatrix();
 	worldMatrix = XMMatrixTranslation(-50.f, 0.f, -10.f);
@@ -322,9 +328,9 @@ void App1::finalPass()
 	worldMatrix = XMMatrixTranslation(-4.f, 10.f, 30.f);
 
 	quad->sendData(renderer->getDeviceContext());
-	tessellationShader->setShaderParameters(renderer->getDeviceContext(), worldMatrix, viewMatrix, projectionMatrix, textureMgr->getTexture("brick"), textureMgr->getTexture("fire"));
+	tessellationShader->setShaderParameters(renderer->getDeviceContext(), worldMatrix, viewMatrix, projectionMatrix, textureMgr->getTexture("brick"), textureMgr->getTexture("fire"), shadowMap->getShaderResourceView(), light, dt);
 	tessellationShader->render(renderer->getDeviceContext(), quad->getIndexCount());
-	*/
+	
 	///ENDOF
 
 
