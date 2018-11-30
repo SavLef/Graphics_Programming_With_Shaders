@@ -9,8 +9,8 @@ cbuffer MatrixBuffer : register(b0)
 	matrix worldMatrix;
 	matrix viewMatrix;
 	matrix projectionMatrix;
-	matrix lightViewMatrix;
-	matrix lightProjectionMatrix;
+	matrix lightViewMatrix[3];
+	matrix lightProjectionMatrix[3];
 };
 
 struct ConstantOutputType
@@ -27,20 +27,24 @@ cbuffer TimerBuffer : register(b1)
 
 struct InputType
 {
-	float3 position : POSITION;
-	float4 colour : COLOR;
+	float4 position : SV_POSITION;
 	float2 tex : TEXCOORD0;
 	float3 normal : NORMAL;
 	float4 lightViewPos : TEXCOORD1;
+	float4 lightViewPos2 : TEXCOORD2;
+	float4 lightViewPos3 : TEXCOORD3;
+	float4 wPosition:POSITION;
 };
 
 struct OutputType
 {
 	float4 position : SV_POSITION;
-	float4 colour : COLOR;
 	float2 tex : TEXCOORD0;
 	float3 normal : NORMAL;
 	float4 lightViewPos : TEXCOORD1;
+	float4 lightViewPos2 : TEXCOORD2;
+	float4 lightViewPos3 : TEXCOORD3;
+	float4 wPosition:POSITION;
 };
 
 [domain("quad")]
@@ -50,6 +54,8 @@ OutputType main(ConstantOutputType input, float2 uvwCoord : SV_DomainLocation, c
 	float2 tex;
 	float3 normal;
 	float4 lightVP;
+	float4 lightVP2;
+	float4 lightVP3;
 
 	OutputType output;
 	float3 v1 = lerp(patch[0].position, patch[1].position, uvwCoord.y);
@@ -71,9 +77,22 @@ OutputType main(ConstantOutputType input, float2 uvwCoord : SV_DomainLocation, c
 	float4 lvp2 = lerp(patch[3].lightViewPos, patch[2].lightViewPos, uvwCoord.y);
 	lightVP = lerp(lvp1, lvp2, uvwCoord.x);
 
+	//LIGHT
+	float4 lvp1_2 = lerp(patch[0].lightViewPos2, patch[1].lightViewPos2, uvwCoord.y);
+	float4 lvp2_2 = lerp(patch[3].lightViewPos2, patch[2].lightViewPos2, uvwCoord.y);
+	lightVP2 = lerp(lvp1_2, lvp2_2, uvwCoord.x);
+
+	//LIGHT
+	float4 lvp1_3 = lerp(patch[0].lightViewPos3, patch[1].lightViewPos3, uvwCoord.y);
+	float4 lvp2_3 = lerp(patch[3].lightViewPos3, patch[2].lightViewPos3, uvwCoord.y);
+	lightVP3 = lerp(lvp1_3, lvp2_3, uvwCoord.x);
+
 	float4 heightmap = texture0.SampleLevel(sampler0, tex, 0);
 	vertexPosition.z += -heightmap * 20;
 	vertexPosition.z = sin(vertexPosition.z + dtime * 40/*speec*/)*10;
+
+	normal.z += -heightmap * 20;
+	normal.z = sin(vertexPosition.z + dtime * 40/*speec*/) * 10;
 
 
 	// Calculate the position of the new vertex against the world, view, and projection matrices.
@@ -81,16 +100,28 @@ OutputType main(ConstantOutputType input, float2 uvwCoord : SV_DomainLocation, c
 	output.position = mul(output.position, viewMatrix);
 	output.position = mul(output.position, projectionMatrix);
 
-	output.colour = patch[0].colour;
+	output.wPosition = mul(float4(vertexPosition, 1.0f), worldMatrix);
+
+	output.normal = mul(float4(normal, 1.0f), worldMatrix);
+	output.normal = mul(output.normal, viewMatrix);
+	output.normal = mul(output.normal, projectionMatrix);
+
+	// Send values to pixel shader.
+	//output.colour = patch[0].colour;
 	output.tex = tex;
 
-	output.normal = mul(normal, worldMatrix);
+	//output.normal = mul(normal, worldMatrix);
 	output.normal = normalize(output.normal);
-	// Send the input colour into the pixel shader.
+
 
 	
-	
 	output.lightViewPos = lightVP;
+
+	output.lightViewPos2 = lightVP2;
+
+	output.lightViewPos3 = lightVP3;
+
+
 	
 
 	return output ;

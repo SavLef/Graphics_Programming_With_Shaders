@@ -42,6 +42,9 @@
     <ClCompile Include="LaserBeam.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Depth_Tes_Shader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="App1.h">
@@ -66,6 +69,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="LaserBeam.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Depth_Tes_Shader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -110,6 +116,18 @@
       <Filter>Resource Files</Filter>
     </FxCompile>
     <FxCompile Include="Tessellation_vs.hlsl">
+      <Filter>Resource Files</Filter>
+    </FxCompile>
+    <FxCompile Include="Depth_Tes_ps.hlsl">
+      <Filter>Resource Files</Filter>
+    </FxCompile>
+    <FxCompile Include="Depth_Tes_vs.hlsl">
+      <Filter>Resource Files</Filter>
+    </FxCompile>
+    <FxCompile Include="Depth_Tes_ds.hlsl">
+      <Filter>Resource Files</Filter>
+    </FxCompile>
+    <FxCompile Include="Depth_Tes_hs.hlsl">
       <Filter>Resource Files</Filter>
     </FxCompile>
   </ItemGroup>

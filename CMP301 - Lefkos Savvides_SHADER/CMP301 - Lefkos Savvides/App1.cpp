@@ -18,8 +18,6 @@ void App1::init(HINSTANCE hinstance, HWND hwnd, int screenWidth, int screenHeigh
 	MetalGearRay = new Model(renderer->getDevice(), renderer->getDeviceContext(), "res/MGR.obj");
 	MetalGearRex = new Model(renderer->getDevice(), renderer->getDeviceContext(), "res/Rex.obj");
 
-	
-
 	//Textures
 	textureMgr->loadTexture("brick", L"res/snowdirt.jpg");
 	textureMgr->loadTexture("t_Ray", L"res/t_Ray.png");
@@ -28,14 +26,13 @@ void App1::init(HINSTANCE hinstance, HWND hwnd, int screenWidth, int screenHeigh
 	textureMgr->loadTexture("fire", L"res/fire.png");
 
 
-
-
 	textureShader = new TextureShader(renderer->getDevice(), hwnd);
 	depthShader = new DepthShader(renderer->getDevice(), hwnd);
 	shadowShader = new ShadowShader(renderer->getDevice(), hwnd);
 	heightShader = new HeightMappingShader(renderer->getDevice(), hwnd);
 	sepiaShader = new SepiaShader(renderer->getDevice(), hwnd);
 	tessellationShader = new TessellationShader(renderer->getDevice(), hwnd);
+	depth_tes = new Depth_Tes_Shader(renderer->getDevice(), hwnd);
 
 	debug = new RenderTexture(renderer->getDevice(), screenWidth, screenHeight, SCREEN_NEAR, SCREEN_DEPTH);
 	pptex = new RenderTexture(renderer->getDevice(), screenWidth, screenHeight, SCREEN_NEAR, SCREEN_DEPTH); 
@@ -49,14 +46,42 @@ void App1::init(HINSTANCE hinstance, HWND hwnd, int screenWidth, int screenHeigh
 
 	// This is your shadow map
 	shadowMap = new RenderTexture(renderer->getDevice(), shadowmapWidth, shadowmapHeight, 0.1f, 100.f);
+	shadowMap2 = new RenderTexture(renderer->getDevice(), shadowmapWidth, shadowmapHeight, 0.1f, 100.f);
+	shadowMap3 = new RenderTexture(renderer->getDevice(), shadowmapWidth, shadowmapHeight, 0.1f, 100.f);
 
+	//Light Setup
 	light = new Light;
-	light->setAmbientColour(0.3f, 0.3f, 0.3f, 1.0f);
-	light->setDiffuseColour(1.0f, 1.0f, 1.0f, 1.0f);
+	light->setAmbientColour(-50.f, 0.f, 0.f, 1.0f);
+	light->setDiffuseColour(.3f, 0.3f, 0.3f, 1.0f);
 	light->setDirection(.7f, -0.7f, 0.7f);
 	light->setPosition(0.f, 0.f, -10.f);
 	light->generateOrthoMatrix(sceneWidth, sceneHeight, 0.1f, 100.f);
+
+	//Light 2 Setup
+	light2 = new Light;
+	light2->setAmbientColour(0.0f, 0.0f, 0.0f, 1.0f);
+	light2->setDiffuseColour(1.0f, 1.0f, 1.0f, 1.0f);
+	light2->setDirection(0.f, -1.0f, 0.5f);
+	light2->setPosition(8.f, 17.f, 10.f);
+	light2->generateProjectionMatrix( 0.1f, 100.f);
+
+	//Light 3 Setup
+	light3 = new Light;
+	light3->setAmbientColour(0.0f, 0.0f, 0.0f, 1.0f);
+	light3->setDiffuseColour(0.f, 1.0f, 1.0f, .0f);
+	light3->setDirection(0.f, -1.0f, 1.f);
+	light3->setPosition(8.f, 17.f, 10.f);
+	light3->generateProjectionMatrix(0.1f, 100.f);
 	
+
+
+
+
+
+
+
+
+	//--------------------------------------
 	splightx = light->getPosition().x;
 	splighty = light->getPosition().y;
 	splightz = light->getPosition().z;
@@ -109,6 +134,8 @@ bool App1::render()
 	// Perform depth pass
 
 	depthPass();
+	depthPass_2();
+	depthPass_3();
 	hmpass();
 	pppass();
 	finalPass();
@@ -134,8 +161,6 @@ void App1::depthPass()
 	mesh->sendData(renderer->getDeviceContext());
 
 	depthShader->setShaderParameters(renderer->getDeviceContext(), worldMatrix, lightViewMatrix, lightProjectionMatrix);
-	
-
 	depthShader->render(renderer->getDeviceContext(), mesh->getIndexCount());
 
 	
@@ -172,16 +197,145 @@ void App1::depthPass()
 
 	//---------------------
 	worldMatrix = renderer->getWorldMatrix();
-	worldMatrix = XMMatrixTranslation(-4.f, 10.f, 35.f);
+	worldMatrix = XMMatrixTranslation(15.f, 0.f, 200.f);
 
 	quad->sendData(renderer->getDeviceContext());
-	depthShader->setShaderParameters(renderer->getDeviceContext(), worldMatrix, lightViewMatrix, lightProjectionMatrix);
-	depthShader->render(renderer->getDeviceContext(), quad->getIndexCount());
+	depth_tes->setShaderParameters(renderer->getDeviceContext(), worldMatrix, lightViewMatrix, lightProjectionMatrix, textureMgr->getTexture("height"), dt);
+	depth_tes->render(renderer->getDeviceContext(), quad->getIndexCount());
 
 	// Set back buffer as render target and reset view port.
 	renderer->setBackBufferRenderTarget();
 	renderer->resetViewport();
 }
+
+void App1::depthPass_2()
+{
+	// Set the render target to be the render to texture.
+	shadowMap2->setRenderTarget(renderer->getDeviceContext());
+	shadowMap2->clearRenderTarget(renderer->getDeviceContext(), 1.0f, 1.0f, 1.0f, 1.0f);
+
+	// get the world, view, and projection matrices from the camera and d3d objects.
+	light2->generateViewMatrix();
+	XMMATRIX lightViewMatrix = light2->getViewMatrix();
+	XMMATRIX lightProjectionMatrix = light2->getProjectionMatrix();
+	XMMATRIX worldMatrix = renderer->getWorldMatrix();
+
+	worldMatrix = XMMatrixTranslation(-50.f, 0.f, -10.f);
+	// Render floor
+	mesh->sendData(renderer->getDeviceContext());
+
+	depthShader->setShaderParameters(renderer->getDeviceContext(), worldMatrix, lightViewMatrix, lightProjectionMatrix);
+	depthShader->render(renderer->getDeviceContext(), mesh->getIndexCount());
+
+
+
+	//calculations for Shadow
+	worldMatrix = renderer->getWorldMatrix();
+	worldMatrix = XMMatrixTranslation(-7.f, 10.f, -25.f);
+	XMMATRIX scaleMatrix = XMMatrixScaling(0.75f, 0.75f, 0.75f);
+	XMMATRIX rotationMatrix = XMMatrixRotationY(160);
+	worldMatrix = XMMatrixMultiply(worldMatrix, scaleMatrix);
+	worldMatrix = XMMatrixMultiply(worldMatrix, rotationMatrix);
+
+
+
+	// Render MetalGearRay
+
+
+	MetalGearRay->sendData(renderer->getDeviceContext());
+	depthShader->setShaderParameters(renderer->getDeviceContext(), worldMatrix, lightViewMatrix, lightProjectionMatrix);
+	depthShader->render(renderer->getDeviceContext(), MetalGearRay->getIndexCount());
+
+	//---------------------------------------------------------------------------------------------------------------------
+
+	worldMatrix = renderer->getWorldMatrix();
+	worldMatrix = XMMatrixTranslation(15.f, 0.f, 200.f);
+	scaleMatrix = XMMatrixScaling(0.2f, 0.2f, 0.2f);
+	worldMatrix = XMMatrixMultiply(worldMatrix, scaleMatrix);
+	//Render Metal Gear Rex
+
+	MetalGearRex->sendData(renderer->getDeviceContext());
+	depthShader->setShaderParameters(renderer->getDeviceContext(), worldMatrix, lightViewMatrix, lightProjectionMatrix);
+	depthShader->render(renderer->getDeviceContext(), MetalGearRex->getIndexCount());
+
+
+	//---------------------
+	worldMatrix = renderer->getWorldMatrix();
+	worldMatrix = XMMatrixTranslation(15.f, 0.f, 200.f);
+
+	quad->sendData(renderer->getDeviceContext());
+	depth_tes->setShaderParameters(renderer->getDeviceContext(), worldMatrix, lightViewMatrix, lightProjectionMatrix, textureMgr->getTexture("height"), dt);
+	depth_tes->render(renderer->getDeviceContext(), quad->getIndexCount());
+
+	// Set back buffer as render target and reset view port.
+	renderer->setBackBufferRenderTarget();
+	renderer->resetViewport();
+}
+
+void App1::depthPass_3()
+{
+	// Set the render target to be the render to texture.
+	shadowMap3->setRenderTarget(renderer->getDeviceContext());
+	shadowMap3->clearRenderTarget(renderer->getDeviceContext(), 1.0f, 1.0f, 1.0f, 1.0f);
+
+	// get the world, view, and projection matrices from the camera and d3d objects.
+	light3->generateViewMatrix();
+	XMMATRIX lightViewMatrix = light3->getViewMatrix();
+	XMMATRIX lightProjectionMatrix = light3->getProjectionMatrix();
+	XMMATRIX worldMatrix = renderer->getWorldMatrix();
+
+	worldMatrix = XMMatrixTranslation(-50.f, 0.f, -10.f);
+	// Render floor
+	mesh->sendData(renderer->getDeviceContext());
+
+	depthShader->setShaderParameters(renderer->getDeviceContext(), worldMatrix, lightViewMatrix, lightProjectionMatrix);
+	depthShader->render(renderer->getDeviceContext(), mesh->getIndexCount());
+
+
+
+	//calculations for Shadow
+	worldMatrix = renderer->getWorldMatrix();
+	worldMatrix = XMMatrixTranslation(-7.f, 10.f, -25.f);
+	XMMATRIX scaleMatrix = XMMatrixScaling(0.75f, 0.75f, 0.75f);
+	XMMATRIX rotationMatrix = XMMatrixRotationY(160);
+	worldMatrix = XMMatrixMultiply(worldMatrix, scaleMatrix);
+	worldMatrix = XMMatrixMultiply(worldMatrix, rotationMatrix);
+
+
+
+	// Render MetalGearRay
+
+
+	MetalGearRay->sendData(renderer->getDeviceContext());
+	depthShader->setShaderParameters(renderer->getDeviceContext(), worldMatrix, lightViewMatrix, lightProjectionMatrix);
+	depthShader->render(renderer->getDeviceContext(), MetalGearRay->getIndexCount());
+
+	//---------------------------------------------------------------------------------------------------------------------
+
+	worldMatrix = renderer->getWorldMatrix();
+	worldMatrix = XMMatrixTranslation(15.f, 0.f, 200.f);
+	scaleMatrix = XMMatrixScaling(0.2f, 0.2f, 0.2f);
+	worldMatrix = XMMatrixMultiply(worldMatrix, scaleMatrix);
+	//Render Metal Gear Rex
+
+	MetalGearRex->sendData(renderer->getDeviceContext());
+	depthShader->setShaderParameters(renderer->getDeviceContext(), worldMatrix, lightViewMatrix, lightProjectionMatrix);
+	depthShader->render(renderer->getDeviceContext(), MetalGearRex->getIndexCount());
+
+
+	//---------------------
+	worldMatrix = renderer->getWorldMatrix();
+	worldMatrix = XMMatrixTranslation(15.f, 0.f, 200.f);
+
+	quad->sendData(renderer->getDeviceContext());
+	depth_tes->setShaderParameters(renderer->getDeviceContext(), worldMatrix, lightViewMatrix, lightProjectionMatrix, textureMgr->getTexture("height"), dt);
+	depth_tes->render(renderer->getDeviceContext(), quad->getIndexCount());
+
+	// Set back buffer as render target and reset view port.
+	renderer->setBackBufferRenderTarget();
+	renderer->resetViewport();
+}
+
 
 void App1::hmpass()
 {
@@ -199,7 +353,7 @@ void App1::hmpass()
 	// Render floor
 	mesh->sendData(renderer->getDeviceContext());
 
-	heightShader->setShaderParameters(renderer->getDeviceContext(), worldMatrix, viewMatrix, projectionMatrix, textureMgr->getTexture("brick"), textureMgr->getTexture("height"), shadowMap->getShaderResourceView(), light);
+	heightShader->setShaderParameters(renderer->getDeviceContext(), worldMatrix, viewMatrix, projectionMatrix, textureMgr->getTexture("brick"), textureMgr->getTexture("height"), shadowMap->getShaderResourceView(), shadowMap2->getShaderResourceView(), shadowMap3->getShaderResourceView(), light, light2, light3);
 	heightShader->render(renderer->getDeviceContext(), mesh->getIndexCount());
 	//Render bullet
 
@@ -219,7 +373,7 @@ void App1::hmpass()
 	worldMatrix = XMMatrixMultiply(worldMatrix, scaleMatrix);
 	worldMatrix = XMMatrixMultiply(worldMatrix, rotationMatrix);
 	MetalGearRay->sendData(renderer->getDeviceContext());
-	shadowShader->setShaderParameters(renderer->getDeviceContext(), worldMatrix, viewMatrix, projectionMatrix, textureMgr->getTexture("t_Ray"), shadowMap->getShaderResourceView(), light);
+	shadowShader->setShaderParameters(renderer->getDeviceContext(), worldMatrix, viewMatrix, projectionMatrix, textureMgr->getTexture("t_Ray"), shadowMap->getShaderResourceView(), shadowMap2->getShaderResourceView(), shadowMap3->getShaderResourceView(), light, light2, light3);
 	shadowShader->render(renderer->getDeviceContext(), MetalGearRay->getIndexCount());
 
 	//Render Metal Gear Rex
@@ -231,18 +385,15 @@ void App1::hmpass()
 	//Render Metal Gear Rex
 
 	MetalGearRex->sendData(renderer->getDeviceContext());
-	shadowShader->setShaderParameters(renderer->getDeviceContext(), worldMatrix, viewMatrix, projectionMatrix, textureMgr->getTexture("t_Rex"), shadowMap->getShaderResourceView(), light);
+	shadowShader->setShaderParameters(renderer->getDeviceContext(), worldMatrix, viewMatrix, projectionMatrix, textureMgr->getTexture("t_Rex"), shadowMap->getShaderResourceView(), shadowMap2->getShaderResourceView(), shadowMap3->getShaderResourceView(), light, light2, light3);
 	shadowShader->render(renderer->getDeviceContext(), MetalGearRex->getIndexCount());
 
 	worldMatrix = renderer->getWorldMatrix();
 	worldMatrix = XMMatrixTranslation(-4.f, 10.f, 35.f);
 
 	quad->sendData(renderer->getDeviceContext());
-	tessellationShader->setShaderParameters(renderer->getDeviceContext(), worldMatrix, viewMatrix, projectionMatrix,/*texture*/ textureMgr->getTexture("fire"), /*heihhtmapping*/ textureMgr->getTexture("height"), shadowMap->getShaderResourceView(), light, dt);
+	tessellationShader->setShaderParameters(renderer->getDeviceContext(), worldMatrix, viewMatrix, projectionMatrix,/*texture*/ textureMgr->getTexture("brick"), /*heightmapping*/ textureMgr->getTexture("height"), shadowMap->getShaderResourceView(), shadowMap2->getShaderResourceView(), shadowMap3->getShaderResourceView(), light, light2, light3, dt);
 	tessellationShader->render(renderer->getDeviceContext(), quad->getIndexCount());
-
-
-
 
 
 	//heightShader->setShaderParameters(renderer->getDeviceContext(), worldMatrix, viewMatrix, projectionMatrix, textureMgr->getTexture("brick"), textureMgr->getTexture("height"), shadowMap->getShaderResourceView(), light);
@@ -285,51 +436,51 @@ void App1::finalPass()
 
 	///UNCOMMENT FOR DEBUGGING WIREFRAME MODE
 	
-	XMMATRIX viewMatrix = camera->getViewMatrix();
-	XMMATRIX projectionMatrix = renderer->getProjectionMatrix();
-	worldMatrix = XMMatrixTranslation(-50.f, 0.f, -10.f);
+	//XMMATRIX viewMatrix = camera->getViewMatrix();
+	//XMMATRIX projectionMatrix = renderer->getProjectionMatrix();
+	//worldMatrix = XMMatrixTranslation(-50.f, 0.f, -10.f);
 
-	// Render floor
-	mesh->sendData(renderer->getDeviceContext());
-	
+	//// Render floor
+	//mesh->sendData(renderer->getDeviceContext());
+	//
 
-	heightShader->setShaderParameters(renderer->getDeviceContext(), worldMatrix, viewMatrix, projectionMatrix, textureMgr->getTexture("brick"), textureMgr->getTexture("height"), shadowMap->getShaderResourceView(), light);
-	heightShader->render(renderer->getDeviceContext(), mesh->getIndexCount());
-
-
+	//heightShader->setShaderParameters(renderer->getDeviceContext(), worldMatrix, viewMatrix, projectionMatrix, textureMgr->getTexture("brick"), textureMgr->getTexture("height"), shadowMap->getShaderResourceView(), light);
+	//heightShader->render(renderer->getDeviceContext(), mesh->getIndexCount());
 
 
-	// Render MetalGearRay
-	worldMatrix = renderer->getWorldMatrix();
-	worldMatrix = XMMatrixTranslation(-7.f, 10.f, -25.f);
-	XMMATRIX scaleMatrix = XMMatrixScaling(0.75f, 0.75f, 0.75f);
-	XMMATRIX rotationMatrix = XMMatrixRotationY(160);
-	worldMatrix = XMMatrixMultiply(worldMatrix, scaleMatrix);
-	worldMatrix = XMMatrixMultiply(worldMatrix, rotationMatrix);
-	MetalGearRay->sendData(renderer->getDeviceContext());
-	shadowShader->setShaderParameters(renderer->getDeviceContext(), worldMatrix, viewMatrix, projectionMatrix, textureMgr->getTexture("t_Ray"), shadowMap->getShaderResourceView(), light);
-	shadowShader->render(renderer->getDeviceContext(), MetalGearRay->getIndexCount());
 
 
-	//Render Metal Gear Rex
+	//// Render MetalGearRay
+	//worldMatrix = renderer->getWorldMatrix();
+	//worldMatrix = XMMatrixTranslation(-7.f, 10.f, -25.f);
+	//XMMATRIX scaleMatrix = XMMatrixScaling(0.75f, 0.75f, 0.75f);
+	//XMMATRIX rotationMatrix = XMMatrixRotationY(160);
+	//worldMatrix = XMMatrixMultiply(worldMatrix, scaleMatrix);
+	//worldMatrix = XMMatrixMultiply(worldMatrix, rotationMatrix);
+	//MetalGearRay->sendData(renderer->getDeviceContext());
+	//shadowShader->setShaderParameters(renderer->getDeviceContext(), worldMatrix, viewMatrix, projectionMatrix, textureMgr->getTexture("t_Ray"), shadowMap->getShaderResourceView(), light);
+	//shadowShader->render(renderer->getDeviceContext(), MetalGearRay->getIndexCount());
 
-	worldMatrix = renderer->getWorldMatrix();
-	worldMatrix = XMMatrixTranslation(15.f, 0.f, 200.f);
-	scaleMatrix = XMMatrixScaling(0.2f, 0.2f, 0.2f);
-	worldMatrix = XMMatrixMultiply(worldMatrix, scaleMatrix);
-	//Render Metal Gear Rex
 
-	MetalGearRex->sendData(renderer->getDeviceContext());
-	shadowShader->setShaderParameters(renderer->getDeviceContext(), worldMatrix, viewMatrix, projectionMatrix, textureMgr->getTexture("t_Rex"), shadowMap->getShaderResourceView(), light);
-	shadowShader->render(renderer->getDeviceContext(), MetalGearRex->getIndexCount());
+	////Render Metal Gear Rex
 
-	
-	worldMatrix = renderer->getWorldMatrix();
-	worldMatrix = XMMatrixTranslation(-4.f, 10.f, 30.f);
+	//worldMatrix = renderer->getWorldMatrix();
+	//worldMatrix = XMMatrixTranslation(15.f, 0.f, 200.f);
+	//scaleMatrix = XMMatrixScaling(0.2f, 0.2f, 0.2f);
+	//worldMatrix = XMMatrixMultiply(worldMatrix, scaleMatrix);
+	////Render Metal Gear Rex
 
-	quad->sendData(renderer->getDeviceContext());
-	tessellationShader->setShaderParameters(renderer->getDeviceContext(), worldMatrix, viewMatrix, projectionMatrix, textureMgr->getTexture("brick"), textureMgr->getTexture("fire"), shadowMap->getShaderResourceView(), light, dt);
-	tessellationShader->render(renderer->getDeviceContext(), quad->getIndexCount());
+	//MetalGearRex->sendData(renderer->getDeviceContext());
+	//shadowShader->setShaderParameters(renderer->getDeviceContext(), worldMatrix, viewMatrix, projectionMatrix, textureMgr->getTexture("t_Rex"), shadowMap->getShaderResourceView(), light);
+	//shadowShader->render(renderer->getDeviceContext(), MetalGearRex->getIndexCount());
+
+	//
+	//worldMatrix = renderer->getWorldMatrix();
+	//worldMatrix = XMMatrixTranslation(-4.f, 10.f, 30.f);
+
+	//quad->sendData(renderer->getDeviceContext());
+	//tessellationShader->setShaderParameters(renderer->getDeviceContext(), worldMatrix, viewMatrix, projectionMatrix, textureMgr->getTexture("brick"), textureMgr->getTexture("fire"), shadowMap->getShaderResourceView(), light, dt);
+	//tessellationShader->render(renderer->getDeviceContext(), quad->getIndexCount());
 	
 	///ENDOF
 
@@ -389,9 +540,9 @@ void App1::gui()
 
 	ImGui::Text("  Rotation: %.1f", camera->getRotation());
 	ImGui::Text("Spot Light: ");
-	ImGui::SliderFloat("X Position: %.1f", &splightx, -50, 50);
-	ImGui::SliderFloat("Y Position: %.1f", &splighty, -50, 50);
-	ImGui::SliderFloat("Z Position: %.1f", &splightz, -50, 50);
+	//ImGui::SliderFloat("X Position: %.1f", &splightx, -50, 50);
+	//ImGui::SliderFloat("Y Position: %.1f", &splighty, -50, 50);
+	//ImGui::SliderFloat("Z Position: %.1f", &splightz, -50, 50);
 
 	ImGui::SliderFloat("X Direction: %.1f", &splightdx, -75,75);
 	ImGui::SliderFloat("Y Direction: %.1f", &splightdy, -75, 75);

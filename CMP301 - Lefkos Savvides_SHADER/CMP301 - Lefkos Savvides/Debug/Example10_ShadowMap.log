@@ -1,3 +1,45 @@
-﻿  App1.cpp
-c:\users\mist\desktop\cmp301\cmp301-graphics_programming\cmp301 - lefkos savvides_shader\cmp301 - lefkos savvides\app1.cpp(58): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-  Example10_ShadowMap.vcxproj -> C:\Users\Mist\Desktop\CMP301\CMP301-GRAPHICS_PROGRAMMING\CMP301 - Lefkos Savvides_SHADER\Debug\CMP301 - Lefkos Savvides.exe
+﻿\\StuHome\HomeDrive4$\1602544\Desktop\CMP301-GRAPHICS_PROGRAMMING-master\CMP301 - Lefkos Savvides_SHADER\CMP301 - Lefkos Savvides\Depth_Tes_ds.hlsl(76,2-36): warning X3206: implicit truncation of vector type
+\\StuHome\HomeDrive4$\1602544\Desktop\CMP301-GRAPHICS_PROGRAMMING-master\CMP301 - Lefkos Savvides_SHADER\CMP301 - Lefkos Savvides\Depth_Tes_ds.hlsl(80,2-28): warning X3206: implicit truncation of vector type
+  
+  compilation object save succeeded; see \\StuHome\HomeDrive4$\1602544\Desktop\CMP301-GRAPHICS_PROGRAMMING-master\CMP301 - Lefkos Savvides_SHADER\CMP301 - Lefkos Savvides\Depth_Tes_ds.cso
+  compilation object save succeeded; see \\StuHome\HomeDrive4$\1602544\Desktop\CMP301-GRAPHICS_PROGRAMMING-master\CMP301 - Lefkos Savvides_SHADER\CMP301 - Lefkos Savvides\Depth_Tes_hs.cso
+  compilation object save succeeded; see \\StuHome\HomeDrive4$\1602544\Desktop\CMP301-GRAPHICS_PROGRAMMING-master\CMP301 - Lefkos Savvides_SHADER\CMP301 - Lefkos Savvides\Depth_Tes_ps.cso
+\\StuHome\HomeDrive4$\1602544\Desktop\CMP301-GRAPHICS_PROGRAMMING-master\CMP301 - Lefkos Savvides_SHADER\CMP301 - Lefkos Savvides\Depth_Tes_vs.hlsl(31,20-51): warning X3206: 'mul': implicit truncation of vector type
+\\StuHome\HomeDrive4$\1602544\Desktop\CMP301-GRAPHICS_PROGRAMMING-master\CMP301 - Lefkos Savvides_SHADER\CMP301 - Lefkos Savvides\Depth_Tes_vs.hlsl(31,2-51): warning X3206: implicit truncation of vector type
+\\StuHome\HomeDrive4$\1602544\Desktop\CMP301-GRAPHICS_PROGRAMMING-master\CMP301 - Lefkos Savvides_SHADER\CMP301 - Lefkos Savvides\Depth_Tes_vs.hlsl(32,20-51): warning X3206: 'mul': implicit truncation of vector type
+\\StuHome\HomeDrive4$\1602544\Desktop\CMP301-GRAPHICS_PROGRAMMING-master\CMP301 - Lefkos Savvides_SHADER\CMP301 - Lefkos Savvides\Depth_Tes_vs.hlsl(32,2-51): warning X3206: implicit truncation of vector type
+\\StuHome\HomeDrive4$\1602544\Desktop\CMP301-GRAPHICS_PROGRAMMING-master\CMP301 - Lefkos Savvides_SHADER\CMP301 - Lefkos Savvides\Depth_Tes_vs.hlsl(33,20-57): warning X3206: 'mul': implicit truncation of vector type
+\\StuHome\HomeDrive4$\1602544\Desktop\CMP301-GRAPHICS_PROGRAMMING-master\CMP301 - Lefkos Savvides_SHADER\CMP301 - Lefkos Savvides\Depth_Tes_vs.hlsl(33,2-57): warning X3206: implicit truncation of vector type
+\\StuHome\HomeDrive4$\1602544\Desktop\CMP301-GRAPHICS_PROGRAMMING-master\CMP301 - Lefkos Savvides_SHADER\CMP301 - Lefkos Savvides\Depth_Tes_vs.hlsl(36,18-47): warning X3206: 'mul': implicit truncation of vector type
+\\StuHome\HomeDrive4$\1602544\Desktop\CMP301-GRAPHICS_PROGRAMMING-master\CMP301 - Lefkos Savvides_SHADER\CMP301 - Lefkos Savvides\Depth_Tes_vs.hlsl(36,2-47): warning X3206: implicit truncation of vector type
+\\StuHome\HomeDrive4$\1602544\Desktop\CMP301-GRAPHICS_PROGRAMMING-master\CMP301 - Lefkos Savvides_SHADER\CMP301 - Lefkos Savvides\Depth_Tes_vs.hlsl(37,18-47): warning X3206: 'mul': implicit truncation of vector type
+\\StuHome\HomeDrive4$\1602544\Desktop\CMP301-GRAPHICS_PROGRAMMING-master\CMP301 - Lefkos Savvides_SHADER\CMP301 - Lefkos Savvides\Depth_Tes_vs.hlsl(37,2-47): warning X3206: implicit truncation of vector type
+\\StuHome\HomeDrive4$\1602544\Desktop\CMP301-GRAPHICS_PROGRAMMING-master\CMP301 - Lefkos Savvides_SHADER\CMP301 - Lefkos Savvides\Depth_Tes_vs.hlsl(38,18-53): warning X3206: 'mul': implicit truncation of vector type
+\\StuHome\HomeDrive4$\1602544\Desktop\CMP301-GRAPHICS_PROGRAMMING-master\CMP301 - Lefkos Savvides_SHADER\CMP301 - Lefkos Savvides\Depth_Tes_vs.hlsl(38,2-53): warning X3206: implicit truncation of vector type
+  
+  compilation object save succeeded; see \\StuHome\HomeDrive4$\1602544\Desktop\CMP301-GRAPHICS_PROGRAMMING-master\CMP301 - Lefkos Savvides_SHADER\CMP301 - Lefkos Savvides\Depth_Tes_vs.cso
+  compilation object save succeeded; see \\StuHome\HomeDrive4$\1602544\Desktop\CMP301-GRAPHICS_PROGRAMMING-master\CMP301 - Lefkos Savvides_SHADER\CMP301 - Lefkos Savvides\depth_vs.cso
+  compilation object save succeeded; see \\StuHome\HomeDrive4$\1602544\Desktop\CMP301-GRAPHICS_PROGRAMMING-master\CMP301 - Lefkos Savvides_SHADER\CMP301 - Lefkos Savvides\hmap_ps.cso
+  compilation object save succeeded; see \\StuHome\HomeDrive4$\1602544\Desktop\CMP301-GRAPHICS_PROGRAMMING-master\CMP301 - Lefkos Savvides_SHADER\CMP301 - Lefkos Savvides\sepia_ps.cso
+\\StuHome\HomeDrive4$\1602544\Desktop\CMP301-GRAPHICS_PROGRAMMING-master\CMP301 - Lefkos Savvides_SHADER\CMP301 - Lefkos Savvides\shadow_ps.hlsl(64,33-59): warning X3206: implicit truncation of vector type
+\\StuHome\HomeDrive4$\1602544\Desktop\CMP301-GRAPHICS_PROGRAMMING-master\CMP301 - Lefkos Savvides_SHADER\CMP301 - Lefkos Savvides\shadow_ps.hlsl(67,34-60): warning X3206: implicit truncation of vector type
+  
+  compilation object save succeeded; see \\StuHome\HomeDrive4$\1602544\Desktop\CMP301-GRAPHICS_PROGRAMMING-master\CMP301 - Lefkos Savvides_SHADER\CMP301 - Lefkos Savvides\shadow_ps.cso
+\\StuHome\HomeDrive4$\1602544\Desktop\CMP301-GRAPHICS_PROGRAMMING-master\CMP301 - Lefkos Savvides_SHADER\CMP301 - Lefkos Savvides\tessellation_ds.hlsl(61,9-67): warning X3206: implicit truncation of vector type
+\\StuHome\HomeDrive4$\1602544\Desktop\CMP301-GRAPHICS_PROGRAMMING-master\CMP301 - Lefkos Savvides_SHADER\CMP301 - Lefkos Savvides\tessellation_ds.hlsl(62,9-67): warning X3206: implicit truncation of vector type
+\\StuHome\HomeDrive4$\1602544\Desktop\CMP301-GRAPHICS_PROGRAMMING-master\CMP301 - Lefkos Savvides_SHADER\CMP301 - Lefkos Savvides\tessellation_ds.hlsl(91,2-36): warning X3206: implicit truncation of vector type
+\\StuHome\HomeDrive4$\1602544\Desktop\CMP301-GRAPHICS_PROGRAMMING-master\CMP301 - Lefkos Savvides_SHADER\CMP301 - Lefkos Savvides\tessellation_ds.hlsl(94,2-28): warning X3206: implicit truncation of vector type
+\\StuHome\HomeDrive4$\1602544\Desktop\CMP301-GRAPHICS_PROGRAMMING-master\CMP301 - Lefkos Savvides_SHADER\CMP301 - Lefkos Savvides\tessellation_ds.hlsl(105,2-55): warning X3206: implicit truncation of vector type
+\\StuHome\HomeDrive4$\1602544\Desktop\CMP301-GRAPHICS_PROGRAMMING-master\CMP301 - Lefkos Savvides_SHADER\CMP301 - Lefkos Savvides\tessellation_ds.hlsl(106,18-47): warning X3206: 'mul': implicit truncation of vector type
+\\StuHome\HomeDrive4$\1602544\Desktop\CMP301-GRAPHICS_PROGRAMMING-master\CMP301 - Lefkos Savvides_SHADER\CMP301 - Lefkos Savvides\tessellation_ds.hlsl(106,2-47): warning X3206: implicit truncation of vector type
+\\StuHome\HomeDrive4$\1602544\Desktop\CMP301-GRAPHICS_PROGRAMMING-master\CMP301 - Lefkos Savvides_SHADER\CMP301 - Lefkos Savvides\tessellation_ds.hlsl(107,18-53): warning X3206: 'mul': implicit truncation of vector type
+\\StuHome\HomeDrive4$\1602544\Desktop\CMP301-GRAPHICS_PROGRAMMING-master\CMP301 - Lefkos Savvides_SHADER\CMP301 - Lefkos Savvides\tessellation_ds.hlsl(107,2-53): warning X3206: implicit truncation of vector type
+  
+  compilation object save succeeded; see \\StuHome\HomeDrive4$\1602544\Desktop\CMP301-GRAPHICS_PROGRAMMING-master\CMP301 - Lefkos Savvides_SHADER\CMP301 - Lefkos Savvides\tessellation_ds.cso
+  compilation object save succeeded; see \\StuHome\HomeDrive4$\1602544\Desktop\CMP301-GRAPHICS_PROGRAMMING-master\CMP301 - Lefkos Savvides_SHADER\CMP301 - Lefkos Savvides\Tessellation_hs.cso
+\\StuHome\HomeDrive4$\1602544\Desktop\CMP301-GRAPHICS_PROGRAMMING-master\CMP301 - Lefkos Savvides_SHADER\CMP301 - Lefkos Savvides\Tessellation_ps.hlsl(64,33-59): warning X3206: implicit truncation of vector type
+\\StuHome\HomeDrive4$\1602544\Desktop\CMP301-GRAPHICS_PROGRAMMING-master\CMP301 - Lefkos Savvides_SHADER\CMP301 - Lefkos Savvides\Tessellation_ps.hlsl(67,34-60): warning X3206: implicit truncation of vector type
+  
+  compilation object save succeeded; see \\StuHome\HomeDrive4$\1602544\Desktop\CMP301-GRAPHICS_PROGRAMMING-master\CMP301 - Lefkos Savvides_SHADER\CMP301 - Lefkos Savvides\Tessellation_ps.cso
+  compilation object save succeeded; see \\StuHome\HomeDrive4$\1602544\Desktop\CMP301-GRAPHICS_PROGRAMMING-master\CMP301 - Lefkos Savvides_SHADER\CMP301 - Lefkos Savvides\Tessellation_vs.cso
+  Example10_ShadowMap.vcxproj -> \\StuHome\HomeDrive4$\1602544\Desktop\CMP301-GRAPHICS_PROGRAMMING-master\CMP301 - Lefkos Savvides_SHADER\Debug\CMP301 - Lefkos Savvides.exe

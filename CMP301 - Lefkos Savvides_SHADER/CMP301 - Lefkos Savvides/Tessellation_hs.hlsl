@@ -4,11 +4,13 @@
 
 struct InputType
 {
-	float3 position : POSITION;
-	float4 colour : COLOR;
+	float4 position : SV_POSITION;
 	float2 tex : TEXCOORD0;
 	float3 normal : NORMAL;
 	float4 lightViewPos : TEXCOORD1;
+	float4 lightViewPos2 : TEXCOORD2;
+	float4 lightViewPos3 : TEXCOORD2;
+	float4 wPosition:POSITION;
 };
 
 struct ConstantOutputType
@@ -19,11 +21,13 @@ struct ConstantOutputType
 
 struct OutputType
 {
-	float3 position : POSITION;
-	float4 colour : COLOR;
+	float4 position : SV_POSITION;
 	float2 tex : TEXCOORD0;
 	float3 normal : NORMAL;
 	float4 lightViewPos : TEXCOORD1;
+	float4 lightViewPos2 : TEXCOORD2;
+	float4 lightViewPos3 : TEXCOORD3;
+	float4 wPosition:POSITION;
 };
 
 ConstantOutputType PatchConstantFunction(InputPatch<InputType, 4> inputPatch, uint patchId : SV_PrimitiveID)
@@ -56,10 +60,13 @@ OutputType main(InputPatch<InputType, 4> patch, uint pointId : SV_OutputControlP
 	// Set the position for this control point as the output position.
 	output.position = patch[pointId].position;
 	// Set the input colour as the output colour.
-	output.colour = patch[pointId].colour;
+	//output.colour = patch[pointId].colour;
 	output.tex = patch[pointId].tex;
 	output.normal = patch[pointId].normal;
 	output.lightViewPos = patch[pointId].lightViewPos;
+	output.lightViewPos2 = patch[pointId].lightViewPos2;
+	output.lightViewPos3 = patch[pointId].lightViewPos3;
+	output.wPosition = patch[pointId].wPosition;
 
 	return output;
 }

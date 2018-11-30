@@ -26,6 +26,7 @@ float4 main(InputType input) : SV_TARGET
 	outputColor.g = (color.r * 0.349) + (color.g * 0.686) + (color.b * 0.168);
 	outputColor.b = (color.r * 0.272) + (color.g * 0.534) + (color.b * 0.131);
 
+
 	return outputColor;
 
 
