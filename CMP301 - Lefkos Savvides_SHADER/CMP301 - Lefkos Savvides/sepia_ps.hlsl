@@ -16,21 +16,38 @@ struct InputType
 
 float4 main(InputType input) : SV_TARGET
 {
-
+	//Apply the tan Function into the tex position to achieve the screen line effect.
+	input.tex = input.tex + (tan(input.tex * 10) * 0.001);
 	//Sample the Texture and use it to extract the values.
 	float4 colour = texture0.Sample(Sampler0, input.tex);
 
-	float4 SepiaColor = colour;
-
-	//Sepia Values (Mathematics found online)
-	//SepiaColor.r = (color.r * 0.393) + (color.g * 0.769) + (color.b * 0.189);
-	//SepiaColor.g = (color.r * 0.349) + (color.g * 0.686) + (color.b * 0.168);
-	//SepiaColor.b = (color.r * 0.272) + (color.g * 0.534) + (color.b * 0.131);
-
-	//Altered Values - More Winter look
-	colour.r = (colour.r * 0.393) + (colour.g * 0.769) + (colour.b * 0.189);
-	colour.g = (colour.r * 0.349) + (colour.g * 0.686) + (colour.b * 0.168);
-	colour.b = (colour.r * 0.272) + (colour.g * 0.534) + (colour.b * 0.131);
+	//Calculate Colour to achieve the unique Black and White look
+	colour.rgb = (colour.r + colour.g + colour.b) / 3.0f;
+	if (colour.r<0.2 || colour.r>0.9)
+	{
+		colour.r = 0.2; 
+	}
+	else
+	{
+		colour.r = 1.0f;
+	}
+	if (colour.g<0.2 || colour.g>0.9)
+	{
+		colour.g = 0.2;
+	}
+	else 
+	{
+		colour.g = 1.0f;
+	}
+	if (colour.b<0.2 || colour.b>0.9)
+	{
+		colour.b = 0.2;
+	}
+	else
+	{
+		colour.b = 1.0f;
+	}
+	
 
 
 	return colour;
