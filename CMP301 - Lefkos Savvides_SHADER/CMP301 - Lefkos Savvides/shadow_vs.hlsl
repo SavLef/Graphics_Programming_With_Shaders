@@ -1,6 +1,8 @@
+//Taxture and Sampler
 Texture2D texture0 : register(t0);
 SamplerState sampler0 : register(s0);
 
+//MatrixBuffer - Accommodates three lights.
 cbuffer MatrixBuffer : register(b0)
 {
 	matrix worldMatrix;
@@ -10,6 +12,7 @@ cbuffer MatrixBuffer : register(b0)
 	matrix lightProjectionMatrix[3];
 };
 
+//Data inputed from the mesh.
 struct InputType
 {
     float4 position : POSITION;
@@ -17,6 +20,7 @@ struct InputType
 	float3 normal : NORMAL;
 };
 
+//Data to be sent to the Pixel Shader.
 struct OutputType
 {
 	float4 position : SV_POSITION;
@@ -34,12 +38,9 @@ OutputType main(InputType input)
 {
     OutputType output;
 
-	////Height Map
-	//float4 heightmap = texture0.SampleLevel(sampler0, input.tex, 0);
-	//input.position.y = heightmap * 5;
-
-
+	//Calculate the position of the vertex againsts the world.
 	output.wPosition = mul(input.position, worldMatrix);
+
 	// Calculate the position of the vertex against the world, view, and projection matrices.
 	output.position = mul(input.position, worldMatrix);
 	output.position = mul(output.position, viewMatrix);
@@ -61,9 +62,13 @@ OutputType main(InputType input)
 	output.lightViewPos3 = mul(output.lightViewPos3, lightViewMatrix[2]);
 	output.lightViewPos3 = mul(output.lightViewPos3, lightProjectionMatrix[2]);
 
-
+	//Set the tex coordinates to be passed to the pixel shader.
     output.tex = input.tex;
+
+	//Set the normal coordinates to be passed to the pixel shader.
     output.normal = mul(input.normal, (float3x3)worldMatrix);
+
+	//Normalize the normal coordinates.
     output.normal = normalize(output.normal);
 
 	return output;

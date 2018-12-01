@@ -1,6 +1,6 @@
-// texture vertex shader
-// Basic shader for rendering textured geometry
+//Post Processing Vertex Shader
 
+//Matrix Buffer
 cbuffer MatrixBuffer : register(b0)
 {
 	matrix worldMatrix;
@@ -8,6 +8,7 @@ cbuffer MatrixBuffer : register(b0)
 	matrix projectionMatrix;
 };
 
+//Takes Data from Meshes
 struct InputType
 {
 	float4 position : POSITION;
@@ -15,6 +16,7 @@ struct InputType
 	float3 normal : NORMAL;
 };
 
+//Data that will be sent to the Pixel Shader
 struct OutputType
 {
 	float4 position : SV_POSITION;
@@ -34,6 +36,7 @@ OutputType main(InputType input)
 	// Store the texture coordinates for the pixel shader.
 	output.tex = input.tex;
 
+	// Store the normal coordinates for the pixel shader.
 	output.normal = input.normal;
 
 	return output;

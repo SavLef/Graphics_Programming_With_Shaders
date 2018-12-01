@@ -1,10 +1,8 @@
-// Texture pixel/fragment shader
-// Basic fragment shader for rendering textured geometry
-
-// Texture and sampler registers
+//Texture and Sampler
 Texture2D texture0 : register(t0);
 SamplerState Sampler0 : register(s0);
 
+//Input data from Vertex Shader
 struct InputType
 {
 	float4 position : SV_POSITION;

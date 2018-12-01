@@ -1,9 +1,4 @@
-// Tessellation vertex shader.
-// Doesn't do much, could manipulate the control points
-// Pass forward data, strip out some values not required for example.
-
-
-
+//Inputs from Quad information
 struct InputType
 {
 	float4 position : SV_POSITION;
@@ -16,6 +11,7 @@ struct InputType
 
 };
 
+//Outputs to Hull Shader
 struct OutputType
 {
 	float4 position : SV_POSITION;
@@ -31,18 +27,21 @@ OutputType main(InputType input)
 {
 	OutputType output;
 
-	// Pass the vertex position into the hull shader.
+	// Pass the vertex position into the Hull shader.
 	output.position = input.position;
-	//output.colour = float4(1.0, 0.0, 0.0, 1.0);
+
+	// Pass the tex coordinates to the Hull shader.
 	output.tex = input.tex;
-	// Pass the input color into the hull shader.
+
+	// Pass the normal coordinates into the Hull shader.
 	output.normal = input.normal;
+
+	//Declare the data to be sent to the pixel shader regarding the lightViewPositions for each of the three lights from the input values.
 	output.lightViewPos = input.lightViewPos;
-
 	output.lightViewPos2 = input.lightViewPos2;
-
 	output.lightViewPos3 = input.lightViewPos3;
 
+	//Send the world Position for the vertex to the Pixel Shader.
 	output.wPosition = input.wPosition;
 
 	return output;

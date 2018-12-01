@@ -5,6 +5,7 @@
 Texture2D texture0 : register(t0);
 SamplerState Sampler0 : register(s0);
 
+//Take data from the Vertex Shader
 struct InputType
 {
 	float4 position : SV_POSITION;

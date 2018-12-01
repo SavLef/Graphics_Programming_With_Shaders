@@ -3,6 +3,7 @@
 Texture2D texture0 : register(t0);
 SamplerState sampler0 : register(s0);
 
+//Height Mapping Matrix Buffer, accommodates 3 lights.
 cbuffer MatrixBuffer : register(b0)
 {
 	matrix worldMatrix;
@@ -12,6 +13,7 @@ cbuffer MatrixBuffer : register(b0)
 	matrix lightProjectionMatrix[3];
 };
 
+//Takes in data from the mesh.
 struct InputType
 {
 	float4 position : POSITION;
@@ -20,6 +22,7 @@ struct InputType
 
 };
 
+//Sends the data to the pixel shader.
 struct OutputType
 {
 	float4 position : SV_POSITION;
@@ -43,7 +46,6 @@ OutputType main(InputType input)
 	float4 heightmap = texture0.SampleLevel(sampler0, input.tex, 0);
 	input.position.y += heightmap * 1.2;
 
-	//If above code commented out, it casts normal shadows, so it should be the bumps
 
 	output.wPosition = mul(input.position, worldMatrix);
 	// Calculate the position of the vertex against the world, view, and projection matrices.

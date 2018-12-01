@@ -1,3 +1,4 @@
+//Matrix Buffer
 cbuffer MatrixBuffer : register(b0)
 {
     matrix worldMatrix;
@@ -5,6 +6,7 @@ cbuffer MatrixBuffer : register(b0)
     matrix projectionMatrix;
 };
 
+//Takes in the mesh data
 struct InputType
 {
     float4 position : POSITION;
@@ -12,6 +14,7 @@ struct InputType
     float3 normal : NORMAL;
 };
 
+//Outputs to the Pixel Shader
 struct OutputType
 {
     float4 position : SV_POSITION;
