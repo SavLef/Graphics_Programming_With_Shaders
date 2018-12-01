@@ -1,9 +1,11 @@
+//Texture Shader
 #include "TextureShader.h"
 
 
 
 TextureShader::TextureShader(ID3D11Device* device, HWND hwnd) : BaseShader(device, hwnd)
 {
+	//Initialise Shaders to use
 	initShader(L"texture_vs.cso", L"texture_ps.cso");
 }
 
@@ -38,7 +40,10 @@ TextureShader::~TextureShader()
 
 void TextureShader::initShader(WCHAR* vsFilename, WCHAR* psFilename)
 {
+	//Setup Buffer Descriptions
 	D3D11_BUFFER_DESC matrixBufferDesc;
+
+	//Setup Sampler Descriptions
 	D3D11_SAMPLER_DESC samplerDesc;
 
 	// Load (+ compile) shader files

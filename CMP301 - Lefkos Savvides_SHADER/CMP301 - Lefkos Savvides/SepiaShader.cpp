@@ -4,6 +4,7 @@
 
 SepiaShader::SepiaShader(ID3D11Device* device, HWND hwnd) : BaseShader(device, hwnd)
 {
+	//Initiate the Shaders to use.
 	initShader(L"sepia_vs.cso", L"sepia_ps.cso");
 }
 
@@ -37,6 +38,7 @@ SepiaShader::~SepiaShader()
 
 void SepiaShader::initShader(WCHAR* vsFilename, WCHAR* psFilename)
 {
+	//Setup Buffer Descriptions
 	D3D11_BUFFER_DESC matrixBufferDesc;
 	D3D11_SAMPLER_DESC samplerDesc;
 
@@ -77,24 +79,31 @@ void SepiaShader::setShaderParameters(ID3D11DeviceContext* deviceContext, const 
 	HRESULT result;
 	D3D11_MAPPED_SUBRESOURCE mappedResource;
 	MatrixBufferType* dataPtr;
-	XMMATRIX tworld, tview, tproj;
 
 
 	// Transpose the matrices to prepare them for the shader.
+	XMMATRIX tworld, tview, tproj;
+
 	tworld = XMMatrixTranspose(worldMatrix);
 	tview = XMMatrixTranspose(viewMatrix);
 	tproj = XMMatrixTranspose(projectionMatrix);
 
-	// Sned matrix data
+	//Pass in Matrix Data to the Buffer to be passed into the Vertex Shader.
 	result = deviceContext->Map(matrixBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
 	dataPtr = (MatrixBufferType*)mappedResource.pData;
-	dataPtr->world = tworld;// worldMatrix;
+
+	//World Matrix
+	dataPtr->world = tworld;
+	//View Matrix
 	dataPtr->view = tview;
+	//Projection Matrix
 	dataPtr->projection = tproj;
+
+	//Set the buffer in the Vertex Shader
 	deviceContext->Unmap(matrixBuffer, 0);
 	deviceContext->VSSetConstantBuffers(0, 1, &matrixBuffer);
 
-	// Set shader texture and sampler resource in the pixel shader.
+	// Set shader texture and sampler resource in the Pixel Shader.
 	deviceContext->PSSetShaderResources(0, 1, &texture);
 	deviceContext->PSSetSamplers(0, 1, &sampleState);
 }

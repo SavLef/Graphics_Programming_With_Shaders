@@ -1,9 +1,10 @@
-// tessellation shader.cpp
+// Depth Tessellation shader.cpp
 #include "Depth_Tes_Shader.h"
 
 
 Depth_Tes_Shader::Depth_Tes_Shader(ID3D11Device* device, HWND hwnd) : BaseShader(device, hwnd)
 {
+	//Initialise Shaders to use
 	initShader(L"Depth_Tes_vs.cso", L"Depth_Tes_hs.cso", L"Depth_Tes_ds.cso", L"Depth_Tes_ps.cso");
 }
 
@@ -37,9 +38,12 @@ Depth_Tes_Shader::~Depth_Tes_Shader()
 
 void Depth_Tes_Shader::initShader(WCHAR* vsFilename, WCHAR* psFilename)
 {
+	//Setup Buffer Descriptions
 	D3D11_BUFFER_DESC matrixBufferDesc;
-	D3D11_SAMPLER_DESC samplerDesc;
 	D3D11_BUFFER_DESC timerBufferDesc;
+
+	//Setup Sampler Descriptions
+	D3D11_SAMPLER_DESC samplerDesc;
 
 	// Load (+ compile) shader files
 	loadVertexShader(vsFilename);
@@ -53,7 +57,7 @@ void Depth_Tes_Shader::initShader(WCHAR* vsFilename, WCHAR* psFilename)
 	matrixBufferDesc.MiscFlags = 0;
 	matrixBufferDesc.StructureByteStride = 0;
 
-	// Setup the description of the dynamic matrix constant buffer that is in the vertex shader.
+	// Setup the description of the Time buffer that is in the Domain shader.
 	timerBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
 	timerBufferDesc.ByteWidth = sizeof(TimeBufferType);
 	timerBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
@@ -101,7 +105,6 @@ void Depth_Tes_Shader::setShaderParameters(ID3D11DeviceContext* deviceContext, c
 	HRESULT result;
 	D3D11_MAPPED_SUBRESOURCE mappedResource;
 	MatrixBufferType* dataPtr;
-	//MatrixBufferType* dataPtr;
 
 	// Transpose the matrices to prepare them for the shader.
 	XMMATRIX tworld = XMMatrixTranspose(worldMatrix);
@@ -118,12 +121,11 @@ void Depth_Tes_Shader::setShaderParameters(ID3D11DeviceContext* deviceContext, c
 	deviceContext->Unmap(matrixBuffer, 0);
 	deviceContext->VSSetConstantBuffers(0, 1, &matrixBuffer);
 
-	//DS
-	// Set shader texture and sampler resource in the domain shader for Height Mapping.
+	// Set shader texture and sampler resource in the Domain shader for Height Mapping.
 	deviceContext->DSSetShaderResources(0, 1, &texture);
 	deviceContext->DSSetSamplers(0, 1, &sampleState);
 
-	//Timer
+	//Timer - Send to the Domain Shader for the displacement
 	TimeBufferType* timePtr;
 	deviceContext->Map(timeBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
 	timePtr = (TimeBufferType*)mappedResource.pData;

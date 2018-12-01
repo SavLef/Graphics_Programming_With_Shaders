@@ -1,4 +1,4 @@
-// depth shader.cpp
+// Depth shader.cpp
 #include "depthshader.h"
 
 
