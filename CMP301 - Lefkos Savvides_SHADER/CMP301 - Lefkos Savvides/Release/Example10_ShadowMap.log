@@ -1,0 +1,3 @@
+﻿C:\Users\Mist\Desktop\CMP301\CMP301-GRAPHICS_PROGRAMMING\CMP301 - Lefkos Savvides_SHADER\CMP301 - Lefkos Savvides\depth_ps.hlsl(7,30-40): error X4502: invalid vs_2_0 output semantic 'SV_TARGET'
+  
+  compilation failed; no code produced
