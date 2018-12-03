@@ -2,6 +2,13 @@
 // Prepares control points for tessellation
 
 //Inputs from Vertex Shader - Three lights
+
+cbuffer ValuesBuffer : register(b0)
+{
+	int4 eg;
+	int4 insd;
+};
+
 struct InputType
 {
 	float4 position : SV_POSITION;
@@ -36,14 +43,14 @@ ConstantOutputType PatchConstantFunction(InputPatch<InputType, 4> inputPatch, ui
 	ConstantOutputType output;
 
 	// Set the tessellation factors for the four edges of the quad.
-	output.edges[0] = 10;// 1st Edge
-	output.edges[1] = 10;// 2nd Edge
-	output.edges[2] = 10;// 3rd Edge
-	output.edges[3] = 10;// 4th Edge
+	output.edges[0] = eg.x;// 1st Edge
+	output.edges[1] = eg.y;// 2nd Edge
+	output.edges[2] = eg.z;// 3rd Edge
+	output.edges[3] = eg.w;// 4th Edge
 
 	// Set the tessellation factor for tessallating inside the quad.
-	output.inside[0] = 10;// tessellationFactor;
-	output.inside[1] = 10;// tessellationFactor;
+	output.inside[0] = insd.x;// tessellationFactor;
+	output.inside[1] = insd.y;// tessellationFactor;
 
 	return output;
 }

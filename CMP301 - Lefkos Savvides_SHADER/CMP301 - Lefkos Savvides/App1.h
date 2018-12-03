@@ -98,6 +98,9 @@ private:
 
 //Delta Time for Height Mapping Tessellation
 	float dt;
+
+	XMINT4 edge{ 10,10,10,10 };
+	XMINT4 inside{ 10,10,0,0 };
 };
 
 #endif

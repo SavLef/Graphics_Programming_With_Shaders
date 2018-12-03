@@ -41,6 +41,7 @@ void Depth_Tes_Shader::initShader(WCHAR* vsFilename, WCHAR* psFilename)
 	//Setup Buffer Descriptions
 	D3D11_BUFFER_DESC matrixBufferDesc;
 	D3D11_BUFFER_DESC timerBufferDesc;
+	D3D11_BUFFER_DESC TesValBufferDesc;
 
 	//Setup Sampler Descriptions
 	D3D11_SAMPLER_DESC samplerDesc;
@@ -65,6 +66,15 @@ void Depth_Tes_Shader::initShader(WCHAR* vsFilename, WCHAR* psFilename)
 	timerBufferDesc.MiscFlags = 0;
 	timerBufferDesc.StructureByteStride = 0;
 	renderer->CreateBuffer(&timerBufferDesc, NULL, &timeBuffer);
+
+	// Setup the description of the Tessellation Values that is in the Hull shader.
+	TesValBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
+	TesValBufferDesc.ByteWidth = sizeof(TesValuesType);
+	TesValBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+	TesValBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+	TesValBufferDesc.MiscFlags = 0;
+	TesValBufferDesc.StructureByteStride = 0;
+	renderer->CreateBuffer(&timerBufferDesc, NULL, &valuesBuffer);
 
 	// Create a texture sampler state description.
 	samplerDesc.Filter = D3D11_FILTER_ANISOTROPIC;
@@ -100,7 +110,7 @@ void Depth_Tes_Shader::initShader(WCHAR* vsFilename, WCHAR* hsFilename, WCHAR* d
 }
 
 
-void Depth_Tes_Shader::setShaderParameters(ID3D11DeviceContext* deviceContext, const XMMATRIX &worldMatrix, const XMMATRIX &viewMatrix, const XMMATRIX &projectionMatrix,ID3D11ShaderResourceView* texture, float dtimed)
+void Depth_Tes_Shader::setShaderParameters(ID3D11DeviceContext* deviceContext, const XMMATRIX &worldMatrix, const XMMATRIX &viewMatrix, const XMMATRIX &projectionMatrix,ID3D11ShaderResourceView* texture, float dtimed, XMINT4 eg, XMINT4 ins)
 {
 	HRESULT result;
 	D3D11_MAPPED_SUBRESOURCE mappedResource;
@@ -132,6 +142,23 @@ void Depth_Tes_Shader::setShaderParameters(ID3D11DeviceContext* deviceContext, c
 	timePtr->dtime = dtimed;
 	deviceContext->Unmap(timeBuffer, 0);
 	deviceContext->DSSetConstantBuffers(1, 1, &timeBuffer);
+
+
+	//Set data from the values inputed to the Values Buffer to be send to the Domain Shader.
+	TesValuesType* tesPtr;
+	deviceContext->Map(valuesBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
+	tesPtr = (TesValuesType*)mappedResource.pData;
+
+	tesPtr->edg.x = eg.x;
+	tesPtr->edg.y = eg.y;
+	tesPtr->edg.z = eg.z;
+	tesPtr->edg.w = eg.w;
+
+	tesPtr->insd.x = ins.x;
+	tesPtr->insd.y = ins.y;
+
+	deviceContext->Unmap(valuesBuffer, 0);
+	deviceContext->HSSetConstantBuffers(0, 1, &valuesBuffer);
 
 
 	

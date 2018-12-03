@@ -4,6 +4,7 @@ Texture2D texture0 : register(t0);
 Texture2D texture1 : register(t1);
 SamplerState sampler0 : register(s0);
 
+
 //Matrix Buffer, catering for three lights.
 cbuffer MatrixBuffer : register(b0)
 {

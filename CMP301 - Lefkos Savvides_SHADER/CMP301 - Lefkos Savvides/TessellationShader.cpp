@@ -42,6 +42,7 @@ void TessellationShader::initShader(WCHAR* vsFilename, WCHAR* psFilename)
 	D3D11_BUFFER_DESC matrixBufferDesc;
 	D3D11_BUFFER_DESC lightBufferDesc;
 	D3D11_BUFFER_DESC timerBufferDesc;
+	D3D11_BUFFER_DESC TesValBufferDesc;
 
 	//Setup Sampler Descriptions
 	D3D11_SAMPLER_DESC samplerDesc;
@@ -96,6 +97,15 @@ void TessellationShader::initShader(WCHAR* vsFilename, WCHAR* psFilename)
 	timerBufferDesc.MiscFlags = 0;
 	timerBufferDesc.StructureByteStride = 0;
 	renderer->CreateBuffer(&timerBufferDesc, NULL, &timeBuffer);
+
+	// Setup the description of the Tessellation Values that is in the Hull shader.
+	TesValBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
+	TesValBufferDesc.ByteWidth = sizeof(TesValuesType);
+	TesValBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+	TesValBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+	TesValBufferDesc.MiscFlags = 0;
+	TesValBufferDesc.StructureByteStride = 0;
+	renderer->CreateBuffer(&timerBufferDesc, NULL, &valuesBuffer);
 }
 
 void TessellationShader::initShader(WCHAR* vsFilename, WCHAR* hsFilename, WCHAR* dsFilename, WCHAR* psFilename)
@@ -109,7 +119,7 @@ void TessellationShader::initShader(WCHAR* vsFilename, WCHAR* hsFilename, WCHAR*
 }
 
 
-void TessellationShader::setShaderParameters(ID3D11DeviceContext* deviceContext, const XMMATRIX &worldMatrix, const XMMATRIX &viewMatrix, const XMMATRIX &projectionMatrix, ID3D11ShaderResourceView* texture, ID3D11ShaderResourceView* texture2, ID3D11ShaderResourceView*depthMap, ID3D11ShaderResourceView*depthMap2, ID3D11ShaderResourceView*depthMap3, Light* light, Light* light2, Light* light3, float dtimed)
+void TessellationShader::setShaderParameters(ID3D11DeviceContext* deviceContext, const XMMATRIX &worldMatrix, const XMMATRIX &viewMatrix, const XMMATRIX &projectionMatrix, ID3D11ShaderResourceView* texture, ID3D11ShaderResourceView* texture2, ID3D11ShaderResourceView*depthMap, ID3D11ShaderResourceView*depthMap2, ID3D11ShaderResourceView*depthMap3, Light* light, Light* light2, Light* light3, float dtimed, XMINT4 eg, XMINT4 ins)
 {
 	HRESULT result;
 	D3D11_MAPPED_SUBRESOURCE mappedResource;
@@ -207,13 +217,29 @@ void TessellationShader::setShaderParameters(ID3D11DeviceContext* deviceContext,
 
 
 
-	//Set data from the Light to the Timer Buffer to be send to the Domain Shader.
+	//Set data from to the Timer Buffer to be send to the Domain Shader.
 	TimeBufferType* timePtr;
 	deviceContext->Map(timeBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
 	timePtr = (TimeBufferType*)mappedResource.pData;
 	timePtr->dtime = dtimed;
 	deviceContext->Unmap(timeBuffer, 0);
 	deviceContext->DSSetConstantBuffers(1, 1, &timeBuffer);
+
+	//Set data from the values inputed to the Values Buffer to be send to the Domain Shader.
+	TesValuesType* tesPtr;
+	deviceContext->Map(valuesBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
+	tesPtr = (TesValuesType*)mappedResource.pData;
+
+	tesPtr->edg.x = eg.x;
+	tesPtr->edg.y = eg.y;
+	tesPtr->edg.z = eg.z;
+	tesPtr->edg.w = eg.w;
+
+	tesPtr->insd.x = ins.x;
+	tesPtr->insd.y = ins.y;
+
+	deviceContext->Unmap(valuesBuffer, 0);
+	deviceContext->HSSetConstantBuffers(0, 1, &valuesBuffer);
 
 	// Set shader texture and sampler resource in the domain shader for Height Mapping.
 	deviceContext->DSSetShaderResources(0, 1, &texture);

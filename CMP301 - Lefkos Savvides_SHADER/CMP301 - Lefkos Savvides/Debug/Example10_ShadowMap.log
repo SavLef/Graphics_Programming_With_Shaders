@@ -1,3 +1,5 @@
-﻿  App1.cpp
-c:\users\mist\desktop\cmp301\cmp301-graphics_programming\cmp301 - lefkos savvides_shader\cmp301 - lefkos savvides\app1.cpp(72): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-  Example10_ShadowMap.vcxproj -> C:\Users\Mist\Desktop\CMP301\CMP301-GRAPHICS_PROGRAMMING\CMP301 - Lefkos Savvides_SHADER\Debug\CMP301 - Lefkos Savvides.exe
+﻿  compilation object save succeeded; see \\StuHome\HomeDrive4$\1602544\Desktop\CMP301-GRAPHICS_PROGRAMMING-master\CMP301 - Lefkos Savvides_SHADER\CMP301 - Lefkos Savvides\Depth_Tes_hs.cso
+  compilation object save succeeded; see \\StuHome\HomeDrive4$\1602544\Desktop\CMP301-GRAPHICS_PROGRAMMING-master\CMP301 - Lefkos Savvides_SHADER\CMP301 - Lefkos Savvides\sepia_ps.cso
+  App1.cpp
+\\stuhome\homedrive4$\1602544\desktop\cmp301-graphics_programming-master\cmp301 - lefkos savvides_shader\cmp301 - lefkos savvides\app1.cpp(72): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+  Example10_ShadowMap.vcxproj -> \\StuHome\HomeDrive4$\1602544\Desktop\CMP301-GRAPHICS_PROGRAMMING-master\CMP301 - Lefkos Savvides_SHADER\Debug\CMP301 - Lefkos Savvides.exe

@@ -36,6 +36,13 @@ private:
 		XMFLOAT3 padding;
 	};
 
+	//Dynamic Tessellation 
+	struct TesValuesType
+	{
+		XMINT4 edg;
+		XMINT4 insd;
+	};
+
 	//LightBufferType Initialization - 3 Lights
 	struct LightBufferType
 	{
@@ -61,7 +68,7 @@ public:
 	~TessellationShader();
 
 	//Pass in Texture for Height Mapping, Texture for Shadows, Depth Maps for each light and Lights 1, 2 and 3.
-	void setShaderParameters(ID3D11DeviceContext* deviceContext, const XMMATRIX &world, const XMMATRIX &view, const XMMATRIX &projection, ID3D11ShaderResourceView* texture, ID3D11ShaderResourceView* texture2, ID3D11ShaderResourceView*depthMap, ID3D11ShaderResourceView*depthMap2, ID3D11ShaderResourceView*depthMap3, Light* light, Light* light2, Light* light3, float dtimed);
+	void setShaderParameters(ID3D11DeviceContext* deviceContext, const XMMATRIX &world, const XMMATRIX &view, const XMMATRIX &projection, ID3D11ShaderResourceView* texture, ID3D11ShaderResourceView* texture2, ID3D11ShaderResourceView*depthMap, ID3D11ShaderResourceView*depthMap2, ID3D11ShaderResourceView*depthMap3, Light* light, Light* light2, Light* light3, float dtimed, XMINT4 eg, XMINT4 insd);
 
 private:
 	void initShader(WCHAR* vsFilename, WCHAR* psFilename);
@@ -72,6 +79,7 @@ private:
 	ID3D11Buffer * matrixBuffer;
 	ID3D11Buffer* tessellationBuffer;
 	ID3D11Buffer* lightBuffer;
+	ID3D11Buffer* valuesBuffer;
 	ID3D11Buffer* timeBuffer;
 
 	//Sampler States Initialization

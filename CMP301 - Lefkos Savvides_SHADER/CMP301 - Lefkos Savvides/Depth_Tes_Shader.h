@@ -26,6 +26,13 @@ private:
 		XMFLOAT3 padding;
 	};
 
+	//Dynamic Tessellation 
+	struct TesValuesType
+	{
+		XMINT4 edg;
+		XMINT4 insd;
+	};
+
 	//Timer BufferType Initiation (For DeltaTime)
 	struct TimeBufferType
 	{
@@ -40,7 +47,7 @@ public:
 	~Depth_Tes_Shader();
 
 	//Pass in texture and Delta_Time
-	void setShaderParameters(ID3D11DeviceContext* deviceContext, const XMMATRIX &world, const XMMATRIX &view, const XMMATRIX &projection, ID3D11ShaderResourceView* texture, float dtimed);
+	void setShaderParameters(ID3D11DeviceContext* deviceContext, const XMMATRIX &world, const XMMATRIX &view, const XMMATRIX &projection, ID3D11ShaderResourceView* texture, float dtimed, XMINT4 eg, XMINT4 insd);
 
 private:
 	void initShader(WCHAR* vsFilename, WCHAR* psFilename);
@@ -51,6 +58,7 @@ private:
 	ID3D11Buffer * matrixBuffer;
 	ID3D11Buffer* tessellationBuffer;
 	ID3D11Buffer* lightBuffer;
+	ID3D11Buffer* valuesBuffer;
 	ID3D11Buffer* timeBuffer;
 
 	//Sample State Initializations
